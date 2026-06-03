@@ -68,7 +68,7 @@ async function callGemini(base64Data, mimeType = "image/jpeg") {
     throw new Error("VITE_GEMINI_KEY environment variable is not set. Add it to your .env file.");
   }
 
-  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-001:generateContent?key=${key}`;
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`;
 
   const payload = {
     contents: [
