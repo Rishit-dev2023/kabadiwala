@@ -61,6 +61,8 @@ SCORING RULES (apply exactly):
 
 If no waste items are visible, return: items=[], segregation_score=0, segregation_quality="poor", is_mixed=false, points_awarded=0, breakdown all zeros, recommendation="No waste detected. Please ensure items are clearly visible in the frame.", environmental_impact="No impact calculated"`;
 
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
 async function callGemini(base64Data, mimeType = "image/jpeg") {
   const key = import.meta.env.VITE_GEMINI_KEY;
 
@@ -96,27 +98,36 @@ async function callGemini(base64Data, mimeType = "image/jpeg") {
     ],
   };
 
-  let res;
-  try {
-    res = await fetch(endpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-  } catch (networkErr) {
-    throw new Error("Network error — check your internet connection and try again.");
-  }
+  const MAX_RETRIES = 3;
+  let lastError;
 
-  if (!res.ok) {
-    const errBody = await res.json().catch(() => ({}));
-    const msg = errBody?.error?.message || `API error ${res.status}`;
-    if (res.status === 400) throw new Error(`Invalid request: ${msg}`);
-    if (res.status === 403) throw new Error("Invalid Gemini API key. Check VITE_GEMINI_KEY.");
-    if (res.status === 429) throw new Error("Rate limit exceeded. Please wait a moment and try again.");
-    throw new Error(`Gemini API error: ${msg}`);
-  }
+  for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+    if (attempt > 0) await sleep(attempt * 3000); // 3s, then 6s
 
-  const data = await res.json();
+    let res;
+    try {
+      res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+    } catch (networkErr) {
+      throw new Error("Network error — check your internet connection and try again.");
+    }
+
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => ({}));
+      const msg = errBody?.error?.message || `API error ${res.status}`;
+      if (res.status === 400) throw new Error(`Invalid request: ${msg}`);
+      if (res.status === 403) throw new Error("Invalid Gemini API key. Check VITE_GEMINI_KEY.");
+      if (res.status === 429) {
+        lastError = new Error("Rate limit exceeded. Retrying automatically…");
+        continue;
+      }
+      throw new Error(`Gemini API error: ${msg}`);
+    }
+
+    const data = await res.json();
 
   // Handle safety blocks
   const candidate = data.candidates?.[0];
@@ -160,8 +171,11 @@ async function callGemini(base64Data, mimeType = "image/jpeg") {
     throw new Error("Failed to parse Gemini's response. Please try again.");
   }
 
-  // Validate and sanitize the response
-  return sanitizeResult(parsed);
+    // Validate and sanitize the response
+    return sanitizeResult(parsed);
+  }
+
+  throw lastError || new Error("Analysis failed after retries. Please try again.");
 }
 
 function sanitizeResult(raw) {
