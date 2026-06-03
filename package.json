@@ -1,0 +1,31 @@
+{
+  "name": "kabadiwala",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "India's smart recycling platform — schedule pickups, earn rewards, track impact.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@react-oauth/google": "^0.13.5",
+    "framer-motion": "^11.3.0",
+    "mongodb": "^7.2.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.29.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "eslint": "^9.29.0",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-react-refresh": "^0.4.12",
+    "globals": "^15.9.0",
+    "vite": "^5.4.0"
+  }
+}

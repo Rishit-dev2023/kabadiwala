@@ -1,0 +1,101 @@
+/* ── Kabadiwala Global Styles ──────────────────────────────────────────── */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  background: #0d1117;
+  color: #e8f4f1;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+a { color: inherit; }
+
+input, select, textarea {
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+/* Dark-mode date/time/select inputs */
+input[type="date"],
+input[type="time"],
+select {
+  color-scheme: dark;
+}
+
+/* Thin emerald scrollbar */
+::-webkit-scrollbar        { width: 4px; }
+::-webkit-scrollbar-track  { background: #0d1117; }
+::-webkit-scrollbar-thumb  { background: #10d97e; border-radius: 2px; }
+
+/* Selection highlight */
+::selection {
+  background: rgba(16, 217, 126, 0.22);
+  color: #e8f4f1;
+}
+
+/* ── Indian flag keyframes for LoadingScreen ────────────────────────────── */
+@keyframes flagRing {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes flagPulse {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50%       { opacity: 0.9;  transform: scale(1.04); }
+}
+
+@keyframes flagShimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+/* ── Responsive nav helpers ─────────────────────────────────────────────── */
+.desktop-nav      { display: flex; }
+.desktop-only-name { display: block; }
+.mobile-menu-btn  { display: none !important; }
+
+@media (max-width: 768px) {
+  .desktop-nav       { display: none !important; }
+  .desktop-only-name { display: none !important; }
+  .mobile-menu-btn   { display: flex !important; align-items: center; justify-content: center; }
+
+  .pickup-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .pickup-form-grid .full-span {
+    grid-column: 1 / -1 !important;
+  }
+}
+
+/* ── Focus ring (accessibility) ─────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid #10d97e;
+  outline-offset: 2px;
+}
